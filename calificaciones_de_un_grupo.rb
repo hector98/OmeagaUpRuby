@@ -3,14 +3,27 @@ class CalificacionesGrupo
   attr_reader :prom_grup, :alum_aprob, :alum_repro, :alum_may, :alum_men
 
   def initialize(alum_cal)
-    @alum_cal = alum_cal.sort.to_h
-    @aux = @alum_cal.sort_by { |k, v| v}.to_h
+    @alum_cal = alum_cal
     @alum_aprob = 0
     @alum_repro = 0
     @prom_grup = 0
-    @alum_cal.each_value do |n|
-      (n >= 60)? @alum_aprob += 1 : @alum_repro += 1
-      @prom_grup += n
+    @alum_may = [alum_cal.keys.first, alum_cal[alum_cal.keys.first]]
+    @alum_men = [alum_cal.keys.first, alum_cal[alum_cal.keys.first]]
+    alum_cal.each do |k, v|
+      (v.truncate(2) >= 60)? @alum_aprob += 1 : @alum_repro += 1
+      if @alum_may[1] < v
+        @alum_may[0], @alum_may[1] = k, v
+      elsif @alum_may[1] == v and @alum_may[0] > k
+        @alum_may[0], @alum_may[1] = k, v
+      end
+
+      if @alum_men[1] > v
+        @alum_men[0], @alum_men[1] = k, v
+      elsif @alum_men[1] == v and @alum_men[0] > k
+        @alum_men[0], @alum_men[1] = k, v
+      end
+
+      @prom_grup += v
     end
   end
 
@@ -32,14 +45,11 @@ class CalificacionesGrupo
   end
 
   def alum_may
-    #aux = @alum_cal.sort_by { |k, v| v }.to_h
-    n, c = @aux.to_a[-2]
-    @alum_may = "#{n} #{c}"
+    return "#{@alum_may[0]} #{@alum_may[1]}"
   end
 
   def alum_men
-    n, c = @aux.sort.to_h.first
-    @alum_men = "#{n} #{c}"
+    return "#{@alum_men[0]} #{@alum_men[1]}"
   end
 
 end
@@ -50,14 +60,14 @@ alum = Hash.new
 
 while n > 0
   name = gets.chomp
-  cal = gets.chomp.to_f
+  cal = gets.chomp[0,5].to_f
   if cal <= 100 and cal >= 0
     alum[name] = cal
     n -= 1
   else
     while cal > 100 or cal < 0
       puts "UPS, ERROR!, DIGITE DE NUEVO LA CALIFICACION DE #{name}"
-      cal = gets.chomp.to_f
+      cal = gets.chomp[0,5].to_f
     end
     alum[name] = cal
     n -= 1
