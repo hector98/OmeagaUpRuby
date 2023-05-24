@@ -15,7 +15,12 @@ class CalificacionesGrupo
   end
 
   def prom_grup
-    return (@prom_grup / @alum_cal.length).round(2)
+    @prom_grup = @prom_grup / @alum_cal.length
+    if @prom_grup == @prom_grup.to_i
+      @prom_grup.to_i
+    else
+      @prom_grup.truncate(2)
+    end
   end
 
   def alum_aprob
@@ -39,6 +44,7 @@ class CalificacionesGrupo
 
 end
 
+=begin
 n = gets.chomp.to_i
 alum = Hash.new
 
@@ -64,3 +70,4 @@ puts "ALUMNOS APROBADOS #{cal_grup.alum_aprob}"
 puts "ALUMNOS REPROBADOS #{cal_grup.alum_repro}"
 puts cal_grup.alum_may
 puts cal_grup.alum_men
+=end
