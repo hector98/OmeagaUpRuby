@@ -15,3 +15,4 @@ while n > 0
 end
 
 puts output
+
